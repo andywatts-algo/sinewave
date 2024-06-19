@@ -5,10 +5,9 @@ from gymnasium.vector.utils import spaces
 import pandas as pd
 
 class SineEnv(gym.Env):
-    def __init__(self, df=None, lookback=3):
+    def __init__(self, config=None):
         super(SineEnv, self).__init__()
-        self.lookback = lookback
-        self.df = df
+        self.config = config
         self.action_space = spaces.Discrete(2)  # Two discrete actions: 0 and 1; Up and Down
         self.observation_space = spaces.Box(low=-1.0, high=1.0, shape=(3,))  # Set the minimum and maximum values of the observation space to be more realistic.
         self.reset()
@@ -39,11 +38,8 @@ class SineEnv(gym.Env):
     # Called after every episode;  Should return first observation
     def reset(self, seed=None, options=None, **kwargs):
         super().reset(seed=seed)
-        if self.df is None:
-            raise ValueError("DataFrame is required before using the environment.")
-        if len(self.df) < 3:
-            raise ValueError("DataFrame must have > 3 elements.")
-        self.day = self.lookback  # start day 1 if looking back 1 day
+        self.df = self.create_sinewave(self.config, seed=seed)
+        self.day = self.config['lookback']  # start day 1 if looking back 1 day
         self.balance = self.start_balance = 10.0
         return self.get_observation(), {}
 
@@ -53,14 +49,18 @@ class SineEnv(gym.Env):
         plt.show()
 
     @staticmethod
-    def create_sinewave(frequency=10, count=1000, min=1, max=10):
+    def create_sinewave(config, seed=None):
+        np.random.seed(seed)
+        frequency = np.random.uniform(low=config['frequency_min'], high=config['frequency_max'])
+        count = config['count']
+        amplitude = np.random.uniform(low=config['amplitude_min'], high=config['amplitude_max'])
         x = np.linspace(0, frequency * np.pi, count)
         y = np.sin(x)  # Generate the sine wave
-        y = (y + 1) * (max - min) / 2 + min # Rescale the sine wave
+        y = (y + 1) * (amplitude - config['amplitude_min']) / 2 + config['amplitude_min'] # Rescale the sine wave
         df = pd.DataFrame()
         df['prices'] = y
         df['price_changes'] = df['prices'].pct_change().fillna(0)
-        return df
+        return df                                                
 
 
         
