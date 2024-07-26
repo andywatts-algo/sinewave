@@ -1,42 +1,63 @@
-## TODO
-* Model is learning, but not great.   Move onto 0DTE.  Come back and test feature engineering
+Must
+* Forecasting Statistics
+    * Exponential Smoothing with Darts
+    * ARIMA with Darts
 
+Should
+* Python for Finance Chapter 7
 
-## Train/Test #v0.2
-* Data
-    * Random frequency and amplitude sinewave
-* Training
-    * 850 ep_rew_mean after 75k episodes
-* Testing
-* Conclusion
-
-
+Could
+* sktime AutoETS and AutoArima
 
 
 
-## Train/Test #v0.1
-* Data
-    * 1000 rows
-    * 10 frequency
-* Environment   
-    * Obs: Last 3 days price change   
-    * Action: Up|Down   
-    * Reward: +1 if correct; -1.5 if incorrect   
-* Training
-    * 978 ep_rew_mean after 1M episodes
-* Testing
-    * Same amplitude and frequency, but different start? WORKS 94%
-    * Different frquency?
-        * 20 = 87%; 30 = 80%; 50 = 65%
-    * Different amplitude?
-        * 4-7 = 82%
-* Conclusion
-    * Not very transferable from fixed frequency/amplitude.
-    * Retrain with variable frequency/amplitude
+---
+### Best Practices
+#### Preparation
+* Convert to log returns
 
+#### Exploration 
+* Outlier detection
+* Change points
+* Trending, mean reverting, or random?   Hurst
+* Stylized Facts
+    * Non-normal returns?  PDF and QQ plots
+    * Volatility clustering?
+    * Absence of autocorrelation
+    * Small decreasing autocorrelation in squared returns
+    * Leverage effect
 
+---
+### Tools
+* darts
+    * ExponentialSmoothing uses statsmodels, which does not support seconds.
 
+sktime.forecasting
 
+---
+### Forecasting Approaches
+#### Statistical  
+* Exponential Smoothing
+* ARIMA
+
+#### Probabilitistic    
+* Markov Models
+* Bayesian Inference
+
+#### Machine Learning    
+* Regression
+* Vector Regression
+* Decision Trees/Random Forests
+
+#### Deep Learning    
+* LSTM
+* GRU
+
+#### Reinforcement Learning    
+* SB3 PPO
+    * Plateau'd at 50k timesteps
+    * Should make episodes variable
+* SAC
 
 
 
